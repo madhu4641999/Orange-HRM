@@ -12,6 +12,8 @@ public class TC1_Login extends BaseTest {
 	@Test
 	public void validate_Login()
 	{
+		log.info("ClassName is "+this.getClass());
+		
 		LandingPage lp = new LandingPage(driver);
 		lp.send_username(properties.getProperty("username"));
 		lp.send_password(properties.getProperty("password"));
