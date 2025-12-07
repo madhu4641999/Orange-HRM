@@ -15,17 +15,18 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 
 public class BaseTest {
-	
+
 	public WebDriver driver;
 	public Properties properties;
 	public Logger log;
 	public WebDriverWait wait;
-	
-	
-	@BeforeTest
+
+
+	@BeforeClass
 	public void setup() throws IOException
 	{
 		log = LogManager.getLogger(this.getClass());
@@ -49,38 +50,37 @@ public class BaseTest {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
 		driver.get(properties.getProperty("url"));
 	}
-	
+
 	@AfterClass
 	public void tearDown()
 	{
-//		driver.close();
-		System.out.println("test case successful");
+		driver.close();
 	}
-	
+
 	public void waitForElementToBeEnabled(WebElement locator,int seconds)
 	{
-	    wait = new WebDriverWait(driver, Duration.ofSeconds(seconds));
+		wait = new WebDriverWait(driver, Duration.ofSeconds(seconds));
 		wait.until(ExpectedConditions.elementToBeClickable(locator));
 	}
-	
+
 	public void waitForElementToBeVisible(WebElement locator, int seconds)
 	{
 		wait = new WebDriverWait(driver,Duration.ofSeconds(seconds));
 		wait.until(ExpectedConditions.visibilityOf(locator));
 	}
-	
+
 	public void javascriptClick(WebElement element)
 	{
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		js.executeScript("arguments[0].click();", element);
 	}
-	
+
 	public void javascriptScroll(WebElement element)
 	{
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
 	}
-	
+
 	public String randomNumericDataGenerator(int length)
 	{
 		String randomNumber = RandomStringUtils.randomNumeric(length);

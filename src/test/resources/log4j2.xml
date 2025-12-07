@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="WARN" monitorInterval="30">
+  <Properties>
+    <!-- LOG_PATH resolves to the project root working directory's logs folder -->
+    <Property name="LOG_PATH">${sys:user.dir}/logs</Property>
+    <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+  </Properties>
+
   <Appenders>
+    <!-- Console appender (optional, useful during development) -->
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <PatternLayout pattern="${LOG_PATTERN}"/>
     </Console>
+
+    <!-- RollingFile appender that writes into the 'logs' folder at project root -->
+    <RollingFile name="File"
+                 fileName="${LOG_PATH}/app.log"
+                 filePattern="${LOG_PATH}/app-%d{yyyy-MM-dd}-%i.log.gz">
+      <PatternLayout pattern="${LOG_PATTERN}"/>
+      <Policies>
+        <!-- roll daily and also when size exceeds -->
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="10MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="30"/>
+    </RollingFile>
   </Appenders>
+
   <Loggers>
-    <Logger name="com.foo.Bar" level="trace">
+    <!-- Example package logger: change 'com' to your app package if desired -->
+    <Logger name="com" level="DEBUG" additivity="false">
       <AppenderRef ref="Console"/>
+      <AppenderRef ref="File"/>
     </Logger>
-    <Root level="error">
+
+    <!-- Root logger set to DEBUG as requested (will record DEBUG and above) -->
+    <Root level="DEBUG">
       <AppenderRef ref="Console"/>
+      <AppenderRef ref="File"/>
     </Root>
   </Loggers>
 </Configuration>
